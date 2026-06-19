@@ -1,0 +1,18 @@
+<h2>Checkout</h2>
+@if (lines().length === 0) {
+  <p>Your cart is empty.</p>
+  <a mat-button routerLink="/shop">Shop</a>
+} @else {
+  <p>Subtotal: <strong>{{ subtotal() | currency: 'USD' }}</strong></p>
+  <p class="hint">You will be redirected to Stripe to complete payment.</p>
+  @if (error()) {
+    <p class="err">{{ error() }}</p>
+  }
+  <button mat-raised-button color="primary" type="button" (click)="pay()" [disabled]="loading()">
+    @if (loading()) {
+      <mat-spinner diameter="20" />
+    } @else {
+      Pay with Stripe
+    }
+  </button>
+}

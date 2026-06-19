@@ -1,0 +1,63 @@
+<h2>Products</h2>
+@if (error()) {
+  <p class="err">{{ error() }}</p>
+}
+
+<table mat-table [dataSource]="products()" class="mat-elevation-z1">
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef>Name</th>
+    <td mat-cell *matCellDef="let p">{{ p.name }}</td>
+  </ng-container>
+  <ng-container matColumnDef="slug">
+    <th mat-header-cell *matHeaderCellDef>Slug</th>
+    <td mat-cell *matCellDef="let p">{{ p.slug }}</td>
+  </ng-container>
+  <ng-container matColumnDef="price">
+    <th mat-header-cell *matHeaderCellDef>Price</th>
+    <td mat-cell *matCellDef="let p">{{ p.basePrice | currency: p.currency.toUpperCase() }}</td>
+  </ng-container>
+  <ng-container matColumnDef="active">
+    <th mat-header-cell *matHeaderCellDef>Active</th>
+    <td mat-cell *matCellDef="let p">{{ p.isActive ? 'Yes' : 'No' }}</td>
+  </ng-container>
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let p">
+      @if (auth.role() === 'admin') {
+        <button mat-button color="warn" type="button" (click)="remove(p)">Delete</button>
+      }
+    </td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+</table>
+
+<h3>Add product</h3>
+<div class="form-grid">
+  <mat-form-field appearance="outline">
+    <mat-label>Slug</mat-label>
+    <input matInput [(ngModel)]="newProduct.slug" name="slug" />
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Name</mat-label>
+    <input matInput [(ngModel)]="newProduct.name" name="name" />
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="wide">
+    <mat-label>Description</mat-label>
+    <textarea matInput rows="2" [(ngModel)]="newProduct.description" name="desc"></textarea>
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Base price</mat-label>
+    <input matInput type="number" [(ngModel)]="newProduct.basePrice" name="bp" />
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Currency</mat-label>
+    <input matInput [(ngModel)]="newProduct.currency" name="cur" />
+  </mat-form-field>
+  <mat-form-field appearance="outline" class="wide">
+    <mat-label>Image URLs (comma-separated)</mat-label>
+    <input matInput [(ngModel)]="newProduct.imageUrls" name="img" />
+  </mat-form-field>
+  <mat-checkbox [(ngModel)]="newProduct.isActive" name="act">Active</mat-checkbox>
+</div>
+<button mat-raised-button color="primary" type="button" (click)="create()">Create</button>

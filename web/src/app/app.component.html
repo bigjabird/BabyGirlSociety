@@ -1,0 +1,24 @@
+<mat-toolbar color="primary" class="toolbar">
+  <a routerLink="/" class="brand">{{ title }}</a>
+  <span class="spacer"></span>
+  <a mat-button routerLink="/shop" routerLinkActive="active">Shop</a>
+  <a mat-button routerLink="/cart" routerLinkActive="active">
+    <span [matBadge]="cartCount()" matBadgeOverlap="false" matBadgeColor="accent">Cart</span>
+  </a>
+  @if (auth.isStaff()) {
+    <a mat-button routerLink="/admin" routerLinkActive="active">Admin</a>
+  }
+  @if (auth.token()) {
+    <button mat-button type="button" (click)="auth.logout()">Sign out</button>
+  } @else {
+    <a mat-stroked-button routerLink="/login">Sign in</a>
+  }
+</mat-toolbar>
+
+<main class="main">
+  <router-outlet />
+</main>
+
+@if (showDesignPanel()) {
+  <app-live-design-panel />
+}

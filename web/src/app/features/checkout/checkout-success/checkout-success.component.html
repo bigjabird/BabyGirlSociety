@@ -1,0 +1,6 @@
+<h2>Thank you</h2>
+<p>Your payment was submitted. You will receive a confirmation from Stripe.</p>
+@if (sessionId) {
+  <p class="muted">Session: {{ sessionId }}</p>
+}
+<a mat-raised-button color="primary" routerLink="/">Back home</a>

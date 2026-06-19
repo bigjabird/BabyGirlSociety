@@ -1,0 +1,22 @@
+@if (loading()) {
+  <p>Loading…</p>
+} @else if (error()) {
+  <p class="err">{{ error() }}</p>
+  <a routerLink="/shop">Back to shop</a>
+} @else {
+  @if (product(); as p) {
+    <article class="detail">
+      <img [src]="heroImage(p)" [alt]="p.name" class="hero" />
+      <div class="info">
+        <h1>{{ p.name }}</h1>
+        <p class="price">{{ p.basePrice | currency: p.currency.toUpperCase() }}</p>
+        <p class="stock" [class.low]="p.totalStock < 10">In stock: {{ p.totalStock }}</p>
+        <p class="desc">{{ p.description }}</p>
+        <div class="actions">
+          <button mat-raised-button color="primary" type="button" (click)="addToCart(p)">Add to cart</button>
+          <a mat-button routerLink="/shop">Continue shopping</a>
+        </div>
+      </div>
+    </article>
+  }
+}

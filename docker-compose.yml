@@ -1,0 +1,14 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: bgs
+      POSTGRES_PASSWORD: bgs_dev_password
+      POSTGRES_DB: bgs
+    ports:
+      - "5432:5432"
+    volumes:
+      - bgs_pgdata:/var/lib/postgresql/data
+
+volumes:
+  bgs_pgdata:

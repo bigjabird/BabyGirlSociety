@@ -1,0 +1,22 @@
+h2 {
+  margin-top: 0;
+}
+
+.err {
+  color: #b00020;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.card img {
+  height: 220px;
+  object-fit: cover;
+}
+
+.price {
+  font-weight: 600;
+}

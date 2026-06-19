@@ -1,0 +1,24 @@
+.subbar {
+  position: relative;
+  z-index: 2;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.shell {
+  min-height: calc(100vh - 128px);
+}
+
+.nav {
+  width: 200px;
+}
+
+.content {
+  padding: 1rem;
+}
+
+a.active {
+  background: rgba(0, 0, 0, 0.06);
+}

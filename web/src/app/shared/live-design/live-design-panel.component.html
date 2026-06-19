@@ -1,0 +1,58 @@
+<button type="button" class="fab" mat-fab color="accent" (click)="toggle()" aria-label="Design panel">
+  <mat-icon>tune</mat-icon>
+</button>
+
+@if (open()) {
+  <aside class="panel" role="dialog" aria-label="Live design">
+    <header class="head">
+      <h3>Live design</h3>
+      <button mat-icon-button type="button" (click)="toggle()" aria-label="Close">
+        <mat-icon>close</mat-icon>
+      </button>
+    </header>
+    <div class="body">
+      <label>Accent</label>
+      <input type="color" [(ngModel)]="accent" (ngModelChange)="onChange()" />
+
+      <label>Background</label>
+      <input type="color" [(ngModel)]="bg" (ngModelChange)="onChange()" />
+
+      <label>Radius ({{ radius }}px)</label>
+      <mat-slider min="0" max="32" step="1" discrete>
+        <input matSliderThumb [(ngModel)]="radius" (ngModelChange)="onChange()" />
+      </mat-slider>
+
+      <label>Spacing ({{ spacing }}px)</label>
+      <mat-slider min="8" max="48" step="2" discrete>
+        <input matSliderThumb [(ngModel)]="spacing" (ngModelChange)="onChange()" />
+      </mat-slider>
+
+      <label>Hero title ({{ heroRem | number: '1.1-1' }}rem)</label>
+      <mat-slider min="1.5" max="4" step="0.125" discrete>
+        <input matSliderThumb [(ngModel)]="heroRem" (ngModelChange)="onChange()" />
+      </mat-slider>
+
+      <div class="row">
+        <button mat-stroked-button type="button" (click)="resetDefaults()">Reset</button>
+        <button mat-stroked-button type="button" (click)="copyJson()">Copy JSON</button>
+      </div>
+
+      <mat-form-field appearance="outline" class="full">
+        <mat-label>Preset name</mat-label>
+        <input matInput [(ngModel)]="presetName" />
+      </mat-form-field>
+      <button mat-raised-button color="primary" type="button" (click)="savePreset()">Save preset</button>
+
+      @if (presets().length) {
+        <h4>Saved</h4>
+        <ul>
+          @for (p of presets(); track p.name) {
+            <li>
+              <button mat-button type="button" (click)="loadPreset(p)">{{ p.name }}</button>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+  </aside>
+}

@@ -1,0 +1,37 @@
+<h2>Cart</h2>
+@if (cart.lines().length === 0) {
+  <p>Your cart is empty.</p>
+  <a mat-button color="primary" routerLink="/shop">Browse shop</a>
+} @else {
+  <mat-card appearance="outlined" class="cart-card">
+    @for (line of cart.lines(); track line.productId) {
+      <div class="line">
+        <div>
+          <strong>{{ line.name }}</strong>
+          <div class="meta">{{ line.unitPrice | currency: line.currency.toUpperCase() }} each</div>
+        </div>
+        <label>
+          Qty
+          <input
+            type="number"
+            min="1"
+            [max]="line.maxStock"
+            [value]="line.quantity"
+            (change)="updateQty(line.productId, $any($event.target).value)"
+          />
+        </label>
+        <div class="sub">
+          {{ line.unitPrice * line.quantity | currency: line.currency.toUpperCase() }}
+        </div>
+        <button mat-button type="button" color="warn" (click)="cart.remove(line.productId)">Remove</button>
+      </div>
+    }
+    <div class="total">
+      <span>Subtotal</span>
+      <strong>{{ cart.subtotal() | currency: 'USD' }}</strong>
+    </div>
+    <div class="actions">
+      <a mat-raised-button color="primary" routerLink="/checkout">Checkout</a>
+    </div>
+  </mat-card>
+}

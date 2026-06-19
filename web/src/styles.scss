@@ -1,0 +1,19 @@
+/* You can add global styles to this file, and also import other style files */
+
+:root {
+  --bgs-accent: #c2185b;
+  --bgs-bg: #faf7f9;
+  --bgs-radius: 12px;
+  --bgs-spacing: 16px;
+  --bgs-hero-size: 2.5rem;
+}
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  background: var(--bgs-bg);
+}

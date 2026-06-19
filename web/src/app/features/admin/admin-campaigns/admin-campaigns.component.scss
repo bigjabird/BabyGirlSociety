@@ -1,0 +1,19 @@
+.err {
+  color: #b00020;
+}
+
+table {
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  max-width: 720px;
+}
+
+.wide {
+  grid-column: 1 / -1;
+}

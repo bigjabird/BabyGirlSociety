@@ -1,0 +1,29 @@
+<h2>Orders</h2>
+@if (error()) {
+  <p class="err">{{ error() }}</p>
+}
+
+<table mat-table [dataSource]="orders()" class="mat-elevation-z1">
+  <ng-container matColumnDef="created">
+    <th mat-header-cell *matHeaderCellDef>When</th>
+    <td mat-cell *matCellDef="let o">{{ o.createdAt | date: 'medium' }}</td>
+  </ng-container>
+  <ng-container matColumnDef="status">
+    <th mat-header-cell *matHeaderCellDef>Status</th>
+    <td mat-cell *matCellDef="let o">{{ o.status }}</td>
+  </ng-container>
+  <ng-container matColumnDef="total">
+    <th mat-header-cell *matHeaderCellDef>Total</th>
+    <td mat-cell *matCellDef="let o">{{ o.totalAmount | currency: o.currency.toUpperCase() }}</td>
+  </ng-container>
+  <ng-container matColumnDef="email">
+    <th mat-header-cell *matHeaderCellDef>Email</th>
+    <td mat-cell *matCellDef="let o">{{ o.customerEmail ?? '—' }}</td>
+  </ng-container>
+  <ng-container matColumnDef="session">
+    <th mat-header-cell *matHeaderCellDef>Stripe session</th>
+    <td mat-cell *matCellDef="let o" class="mono">{{ o.stripeSessionId ?? '—' }}</td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+</table>

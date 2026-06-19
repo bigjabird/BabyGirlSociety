@@ -1,0 +1,17 @@
+.hero {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--bgs-accent, #c2185b) 18%, white), #fff);
+  padding: 2.5rem 1.5rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.tagline {
+  margin: 0.75rem 0 1.25rem;
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+.banner {
+  margin-bottom: 1rem;
+  max-width: 720px;
+}

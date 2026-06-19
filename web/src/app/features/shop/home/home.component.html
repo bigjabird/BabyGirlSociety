@@ -1,0 +1,23 @@
+<section class="hero" [style.border-radius]="'var(--bgs-radius, 12px)'">
+  <h1 [style.font-size]="'var(--bgs-hero-size, 2.5rem)'">Babygirl Society</h1>
+  <p class="tagline">Clothing curated for you — shop the latest drop.</p>
+  <a mat-raised-button color="accent" routerLink="/shop">Shop now</a>
+</section>
+
+@for (c of campaigns(); track c.id) {
+  @let p = bannerPayload(c);
+  <mat-card class="banner" appearance="outlined">
+    <mat-card-header>
+      <mat-card-title>{{ p.headline ?? c.name }}</mat-card-title>
+      <mat-card-subtitle>{{ c.type }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <p>{{ p.subcopy }}</p>
+    </mat-card-content>
+    @if (p.cta) {
+      <mat-card-actions>
+        <a mat-button [routerLink]="p.cta.startsWith('/') ? p.cta : '/shop'">{{ p.cta }}</a>
+      </mat-card-actions>
+    }
+  </mat-card>
+}
