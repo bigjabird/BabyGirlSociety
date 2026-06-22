@@ -8,7 +8,8 @@ import type {
   MarketingCampaign,
   OrderSummary,
   ProductDetail,
-  ProductListItem
+  ProductListItem,
+  ValidatePromoResponse
 } from '../models/api.models';
 
 @Injectable({ providedIn: 'root' })
@@ -28,12 +29,22 @@ export class ApiService {
     return this.http.get<MarketingCampaign[]>(`${this.base}/campaigns/active`);
   }
 
+  validatePromo(code: string, subtotal?: number) {
+    return this.http.post<ValidatePromoResponse>(`${this.base}/campaigns/validate-promo`, {
+      code,
+      subtotal: subtotal ?? null
+    });
+  }
+
   login(email: string, password: string) {
     return this.http.post<LoginResponse>(`${this.base}/auth/login`, { email, password });
   }
 
-  createCheckoutSession(items: { productId: string; quantity: number }[]) {
-    return this.http.post<CheckoutSessionResponse>(`${this.base}/checkout/session`, { items });
+  createCheckoutSession(items: { productId: string; quantity: number }[], promoCode?: string | null) {
+    return this.http.post<CheckoutSessionResponse>(`${this.base}/checkout/session`, {
+      items,
+      promoCode: promoCode ?? null
+    });
   }
 
   authHeaders(token: string): HttpHeaders {

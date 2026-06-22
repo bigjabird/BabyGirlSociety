@@ -4,6 +4,42 @@
   <a mat-button routerLink="/shop">Shop</a>
 } @else {
   <p>Subtotal: <strong>{{ subtotal() | currency: 'USD' }}</strong></p>
+
+  <div class="promo-row">
+    <mat-form-field appearance="outline" class="promo-field">
+      <mat-label>Promo code</mat-label>
+      <input matInput [(ngModel)]="promoInput" [disabled]="promoLoading()" />
+    </mat-form-field>
+    @if (appliedPromo()) {
+      <button mat-stroked-button type="button" (click)="clearPromo()" [disabled]="promoLoading()">
+        Remove
+      </button>
+    } @else {
+      <button mat-stroked-button type="button" (click)="applyPromo()" [disabled]="promoLoading()">
+        Apply
+      </button>
+    }
+  </div>
+
+  @if (promoError()) {
+    <p class="err">{{ promoError() }}</p>
+  }
+  @if (appliedPromo(); as promo) {
+    <p class="promo-applied">
+      {{ promo.code }} applied
+      @if (promo.discountType === 'percent') {
+        ({{ promo.amount }}% off)
+      } @else {
+        ({{ promo.amount | currency: 'USD' }} off)
+      }
+      — save {{ discount() | currency: 'USD' }}
+    </p>
+  }
+
+  <p class="total-line">
+    Total: <strong>{{ total() | currency: 'USD' }}</strong>
+  </p>
+
   <p class="hint">You will be redirected to Stripe to complete payment.</p>
   @if (error()) {
     <p class="err">{{ error() }}</p>

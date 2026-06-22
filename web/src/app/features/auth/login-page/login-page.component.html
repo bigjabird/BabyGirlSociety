@@ -1,23 +1,34 @@
-<mat-card class="card" appearance="outlined">
-  <mat-card-header>
-    <mat-card-title>Staff sign in</mat-card-title>
-    <mat-card-subtitle>Babygirl Society admin</mat-card-subtitle>
-  </mat-card-header>
-  <mat-card-content>
-    <form (ngSubmit)="submit()">
-      <mat-form-field appearance="outline" class="full">
-        <mat-label>Email</mat-label>
-        <input matInput type="email" name="email" [(ngModel)]="email" required autocomplete="username" />
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="full">
-        <mat-label>Password</mat-label>
-        <input matInput type="password" name="password" [(ngModel)]="password" required autocomplete="current-password" />
-      </mat-form-field>
-      @if (error()) {
-        <p class="err">{{ error() }}</p>
-      }
-      <button mat-raised-button color="primary" type="submit">Sign in</button>
-      <p class="back"><a routerLink="/">Back to store</a></p>
-    </form>
-  </mat-card-content>
-</mat-card>
+<section class="page">
+  <h1 class="page-title">Sign In</h1>
+  <p class="page-lead">Welcome back to Babygirl Society.</p>
+
+  <form class="form" (ngSubmit)="submit()">
+    <label class="field">
+      <span class="field-label">Email</span>
+      <input
+        class="field-input"
+        type="email"
+        name="email"
+        [(ngModel)]="email"
+        required
+        autocomplete="username"
+      />
+    </label>
+    <label class="field">
+      <span class="field-label">Password</span>
+      <input
+        class="field-input"
+        type="password"
+        name="password"
+        [(ngModel)]="password"
+        required
+        autocomplete="current-password"
+      />
+    </label>
+    @if (error()) {
+      <p class="err">{{ error() }}</p>
+    }
+    <button class="bgs-btn-primary submit-btn" type="submit">Sign In</button>
+    <p class="back"><a routerLink="/">Back to store</a></p>
+  </form>
+</section>

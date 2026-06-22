@@ -1,4 +1,5 @@
 using BGS.Api.Contracts;
+using BGS.Api.Services;
 using BGS.Domain.Entities;
 using BGS.Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
@@ -33,7 +34,7 @@ public class CheckoutController(BgsDbContext db, IConfiguration config, ILogger<
         {
             var orderId = Guid.NewGuid();
             var now = DateTimeOffset.UtcNow;
-            decimal total = 0;
+            decimal subtotal = 0;
             var lines = new List<OrderLine>();
             var stripeLineItems = new List<SessionLineItemOptions>();
 
@@ -51,7 +52,7 @@ public class CheckoutController(BgsDbContext db, IConfiguration config, ILogger<
                     return BadRequest($"Insufficient stock for {product.Name}");
 
                 var unit = product.BasePrice;
-                total += unit * line.Quantity;
+                subtotal += unit * line.Quantity;
 
                 lines.Add(new OrderLine
                 {
@@ -89,10 +90,40 @@ public class CheckoutController(BgsDbContext db, IConfiguration config, ILogger<
             if (currencies.Count != 1)
                 return BadRequest("All items must use the same currency");
 
+            decimal discountAmount = 0;
+            string? appliedPromo = null;
+
+            if (!string.IsNullOrWhiteSpace(req.PromoCode))
+            {
+                var resolved = await CampaignPromoResolver.TryResolveAsync(db, req.PromoCode, ct);
+                if (resolved == null)
+                    return BadRequest(new { error = "Invalid or expired promo code" });
+
+                var promo = resolved.Value.Promo;
+                if (promo.MinSubtotal.HasValue && subtotal < promo.MinSubtotal.Value)
+                {
+                    return BadRequest(new
+                    {
+                        error = $"Minimum order of {promo.MinSubtotal.Value:C} required for this code"
+                    });
+                }
+
+                discountAmount = CampaignPayloadParser.CalculateDiscount(promo, subtotal);
+                if (discountAmount <= 0)
+                    return BadRequest(new { error = "Promo code does not apply to this order" });
+
+                appliedPromo = promo.Code;
+                ApplyProportionalDiscount(stripeLineItems, subtotal, discountAmount);
+            }
+
+            var total = subtotal - discountAmount;
+
             var order = new Order
             {
                 Id = orderId,
                 TotalAmount = total,
+                DiscountAmount = discountAmount,
+                PromoCode = appliedPromo,
                 Currency = currencies[0],
                 Status = "pending",
                 CreatedAt = now
@@ -130,6 +161,51 @@ public class CheckoutController(BgsDbContext db, IConfiguration config, ILogger<
             await tx.RollbackAsync(ct);
             log.LogError(ex, "Stripe error");
             return BadRequest(new { error = ex.Message });
+        }
+    }
+
+    private static void ApplyProportionalDiscount(
+        List<SessionLineItemOptions> lineItems,
+        decimal subtotal,
+        decimal discountAmount)
+    {
+        if (subtotal <= 0 || discountAmount <= 0 || lineItems.Count == 0)
+            return;
+
+        var targetTotalCents = (long)Math.Round((subtotal - discountAmount) * 100m, MidpointRounding.AwayFromZero);
+        var subtotalCents = (long)Math.Round(subtotal * 100m, MidpointRounding.AwayFromZero);
+        var adjustedCents = new List<long>();
+        long running = 0;
+
+        for (var i = 0; i < lineItems.Count; i++)
+        {
+            var item = lineItems[i];
+            var quantity = item.Quantity ?? 1;
+            var lineSubtotalCents = item.PriceData!.UnitAmount!.Value * quantity;
+            long lineTargetCents;
+
+            if (i == lineItems.Count - 1)
+            {
+                lineTargetCents = targetTotalCents - running;
+            }
+            else
+            {
+                var share = subtotalCents == 0 ? 0m : (decimal)lineSubtotalCents / subtotalCents;
+                lineTargetCents = (long)Math.Round(targetTotalCents * share, MidpointRounding.AwayFromZero);
+                running += lineTargetCents;
+            }
+
+            var unitCents = quantity == 0 ? 0 : Math.Max(0L, lineTargetCents / quantity);
+            item.PriceData.UnitAmount = unitCents;
+            adjustedCents.Add(unitCents * quantity);
+        }
+
+        var sum = adjustedCents.Sum();
+        if (sum != targetTotalCents && lineItems.Count > 0)
+        {
+            var last = lineItems[^1];
+            var diff = targetTotalCents - sum;
+            last.PriceData!.UnitAmount = Math.Max(0L, last.PriceData.UnitAmount!.Value + diff);
         }
     }
 }

@@ -20,11 +20,11 @@ interface DesignState {
 }
 
 const defaults: DesignState = {
-  accent: '#c2185b',
-  bg: '#faf7f9',
-  radius: 12,
-  spacing: 16,
-  heroSize: 40
+  accent: '#4a3728',
+  bg: '#fdfdfd',
+  radius: 4,
+  spacing: 0,
+  heroSize: 48
 };
 
 @Component({

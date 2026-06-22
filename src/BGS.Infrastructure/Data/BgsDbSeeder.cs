@@ -12,20 +12,45 @@ public static class BgsDbSeeder
         var db = scope.ServiceProvider.GetRequiredService<BgsDbContext>();
         await db.Database.MigrateAsync(ct);
 
-        if (await db.Users.AnyAsync(ct))
+        await SeedUsersAsync(db, ct);
+        await SeedProductsAsync(db, ct);
+        await SeedCampaignsAsync(db, ct);
+        await db.SaveChangesAsync(ct);
+    }
+
+    private static async Task SeedUsersAsync(BgsDbContext db, CancellationToken ct)
+    {
+        if (!await db.Users.AnyAsync(u => u.Email == "admin@babygirlsociety.local", ct))
+        {
+            db.Users.Add(new AppUser
+            {
+                Id = Guid.Parse("11111111-1111-1111-1111-111111111111"),
+                Email = "admin@babygirlsociety.local",
+                // password: Admin123!
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin123!"),
+                Role = "admin"
+            });
+        }
+
+        if (!await db.Users.AnyAsync(u => u.Email == "customer@babygirlsociety.local", ct))
+        {
+            db.Users.Add(new AppUser
+            {
+                Id = Guid.Parse("22222222-2222-2222-2222-222222222222"),
+                Email = "customer@babygirlsociety.local",
+                // password: Customer123!
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword("Customer123!"),
+                Role = "customer"
+            });
+        }
+    }
+
+    private static async Task SeedProductsAsync(BgsDbContext db, CancellationToken ct)
+    {
+        if (await db.Products.AnyAsync(ct))
             return;
 
         var now = DateTimeOffset.UtcNow;
-        var adminId = Guid.Parse("11111111-1111-1111-1111-111111111111");
-        db.Users.Add(new AppUser
-        {
-            Id = adminId,
-            Email = "admin@babygirlsociety.local",
-            // password: Admin123!
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword("Admin123!"),
-            Role = "admin"
-        });
-
         var p1 = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaa1");
         var p2 = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaa2");
         var p3 = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaa3");
@@ -75,18 +100,61 @@ public static class BgsDbSeeder
             new InventoryItem { Id = Guid.NewGuid(), ProductId = p1, Sku = "BGS-VELVET-S", QuantityOnHand = 25, LowStockThreshold = 5 },
             new InventoryItem { Id = Guid.NewGuid(), ProductId = p2, Sku = "BGS-SATIN-M", QuantityOnHand = 40, LowStockThreshold = 8 },
             new InventoryItem { Id = Guid.NewGuid(), ProductId = p3, Sku = "BGS-MESH-OS", QuantityOnHand = 60, LowStockThreshold = 10 });
+    }
 
-        db.MarketingCampaigns.Add(new MarketingCampaign
-        {
-            Id = Guid.NewGuid(),
-            Name = "Spring Drop",
-            Type = "banner",
-            PayloadJson = """{"headline":"New arrivals — Babygirl Society","subcopy":"Free shipping over $75","cta":"/shop"}""",
-            StartsAt = now.AddDays(-7),
-            EndsAt = now.AddDays(30),
-            IsActive = true
-        });
+    private static async Task SeedCampaignsAsync(BgsDbContext db, CancellationToken ct)
+    {
+        if (await db.MarketingCampaigns.AnyAsync(ct))
+            return;
 
-        await db.SaveChangesAsync(ct);
+        var now = DateTimeOffset.UtcNow;
+        db.MarketingCampaigns.AddRange(
+            new MarketingCampaign
+            {
+                Id = Guid.NewGuid(),
+                Name = "Spring Drop",
+                Type = "banner",
+                PayloadJson = """
+                    {
+                      "headline": "New arrivals — Babygirl Society",
+                      "subcopy": "Free shipping over $75",
+                      "cta": "/shop",
+                      "image": "https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?w=1600&q=80&auto=format&fit=crop",
+                      "tagline": "Spring is calling — answer in velvet.",
+                      "ctaLabel": "Shop New Arrivals"
+                    }
+                    """,
+                StartsAt = now.AddDays(-7),
+                EndsAt = now.AddDays(30),
+                IsActive = true
+            },
+            new MarketingCampaign
+            {
+                Id = Guid.NewGuid(),
+                Name = "Spring Edit",
+                Type = "featured_collection",
+                PayloadJson = """
+                    {
+                      "title": "The Spring Edit",
+                      "subtitle": "Curated pieces for the season",
+                      "productSlugs": ["velvet-mini-dress", "satin-cami-set"],
+                      "cta": "/shop",
+                      "ctaLabel": "Shop all"
+                    }
+                    """,
+                StartsAt = now.AddDays(-7),
+                EndsAt = now.AddDays(60),
+                IsActive = true
+            },
+            new MarketingCampaign
+            {
+                Id = Guid.NewGuid(),
+                Name = "Launch Promo",
+                Type = "promo_code",
+                PayloadJson = """{"code":"BGS15","discountType":"percent","amount":15,"minSubtotal":50}""",
+                StartsAt = now.AddDays(-7),
+                EndsAt = now.AddDays(90),
+                IsActive = true
+            });
     }
 }

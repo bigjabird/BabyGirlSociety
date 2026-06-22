@@ -34,6 +34,16 @@ export interface CheckoutSessionResponse {
   orderId: string;
 }
 
+export interface ValidatePromoResponse {
+  code: string;
+  discountType: 'percent' | 'fixed';
+  amount: number;
+  minSubtotal: number | null;
+  discountAmount: number;
+  campaignId: string;
+  campaignName: string;
+}
+
 export interface InventoryItemDto {
   id: string;
   productId: string;

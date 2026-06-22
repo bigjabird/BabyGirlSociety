@@ -16,3 +16,14 @@ public record UpsertCampaignRequest(
     DateTimeOffset StartsAt,
     DateTimeOffset? EndsAt,
     bool IsActive);
+
+public record ValidatePromoRequest(string Code, decimal? Subtotal);
+
+public record ValidatePromoResponse(
+    string Code,
+    string DiscountType,
+    decimal Amount,
+    decimal? MinSubtotal,
+    decimal DiscountAmount,
+    Guid CampaignId,
+    string CampaignName);

@@ -11,3 +11,18 @@ export const authGuard: CanActivateFn = (_route, state) => {
   }
   return true;
 };
+
+/** Requires admin or staff role — used for /admin routes */
+export const staffGuard: CanActivateFn = () => {
+  const auth = inject(AuthService);
+  const router = inject(Router);
+  if (!auth.token()) {
+    void router.navigate(['/login'], { queryParams: { returnUrl: '/admin' } });
+    return false;
+  }
+  if (!auth.isStaff()) {
+    void router.navigateByUrl('/');
+    return false;
+  }
+  return true;
+};

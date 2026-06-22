@@ -1,23 +1,144 @@
-<section class="hero" [style.border-radius]="'var(--bgs-radius, 12px)'">
-  <h1 [style.font-size]="'var(--bgs-hero-size, 2.5rem)'">Babygirl Society</h1>
-  <p class="tagline">Clothing curated for you — shop the latest drop.</p>
-  <a mat-raised-button color="accent" routerLink="/shop">Shop now</a>
+<section class="hero" aria-label="Featured collection">
+  <button type="button" class="hero-arrow hero-arrow--prev" (click)="prevSlide()" aria-label="Previous slide">
+    <mat-icon>chevron_left</mat-icon>
+  </button>
+
+  <div class="hero-slide" [style.background-image]="'url(' + slides()[activeSlide()].image + ')'">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-bow" aria-hidden="true">
+        <svg viewBox="0 0 48 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M24 14C18 6 8 4 4 10C2 14 4 20 10 22L24 14Z" stroke="currentColor" stroke-width="1.2" />
+          <path d="M24 14C30 6 40 4 44 10C46 14 44 20 38 22L24 14Z" stroke="currentColor" stroke-width="1.2" />
+          <circle cx="24" cy="14" r="2.5" fill="currentColor" />
+        </svg>
+      </div>
+
+      <a routerLink="/" class="bgs-logo bgs-logo--hero">
+        <span class="bgs-logo__primary">Babygirl</span>
+        <span class="bgs-logo__row">
+          <span class="bgs-logo__line" aria-hidden="true"></span>
+          <span class="bgs-logo__secondary">Society</span>
+          <span class="bgs-logo__heart" aria-hidden="true">♥</span>
+          <span class="bgs-logo__line" aria-hidden="true"></span>
+        </span>
+      </a>
+
+      <p class="hero-tagline">{{ heroTagline() }}</p>
+      <a [routerLink]="heroCta()" class="bgs-btn-primary hero-cta">{{ heroCtaLabel() }}</a>
+    </div>
+  </div>
+
+  <button type="button" class="hero-arrow hero-arrow--next" (click)="nextSlide()" aria-label="Next slide">
+    <mat-icon>chevron_right</mat-icon>
+  </button>
+
+  <div class="hero-dots" role="tablist" aria-label="Hero slides">
+    @for (slide of slides(); track slide.image; let i = $index) {
+      <button
+        type="button"
+        class="hero-dot"
+        [class.hero-dot--active]="activeSlide() === i"
+        (click)="goToSlide(i)"
+        [attr.aria-label]="'Slide ' + (i + 1)"
+        [attr.aria-selected]="activeSlide() === i"
+        role="tab"
+      ></button>
+    }
+  </div>
 </section>
 
-@for (c of campaigns(); track c.id) {
-  @let p = bannerPayload(c);
-  <mat-card class="banner" appearance="outlined">
-    <mat-card-header>
-      <mat-card-title>{{ p.headline ?? c.name }}</mat-card-title>
-      <mat-card-subtitle>{{ c.type }}</mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-content>
-      <p>{{ p.subcopy }}</p>
-    </mat-card-content>
-    @if (p.cta) {
-      <mat-card-actions>
-        <a mat-button [routerLink]="p.cta.startsWith('/') ? p.cta : '/shop'">{{ p.cta }}</a>
-      </mat-card-actions>
-    }
-  </mat-card>
+@for (section of featuredSections(); track section.campaign.id) {
+  @if (section.products.length > 0) {
+    <section class="products-section featured-section">
+      <h2 class="section-heading">{{ section.campaign.payload.title }}</h2>
+      @if (section.campaign.payload.subtitle) {
+        <p class="featured-subtitle">{{ section.campaign.payload.subtitle }}</p>
+      }
+
+      <div class="product-grid">
+        @for (p of section.products; track p.id) {
+          <article class="product-card">
+            <a [routerLink]="['/product', p.slug]" class="product-image-link">
+              <img [src]="thumb(p)" [alt]="p.name" loading="lazy" class="product-image" />
+            </a>
+            <h3 class="product-name">{{ p.name }}</h3>
+            @if (subtitle(p)) {
+              <p class="product-subtitle">{{ subtitle(p) }}</p>
+            }
+            <p class="product-price">{{ p.basePrice | currency: p.currency.toUpperCase() }}</p>
+            <a [routerLink]="['/product', p.slug]" class="bgs-btn-outline">Choose Options</a>
+          </article>
+        }
+      </div>
+
+      @if (section.campaign.payload.cta) {
+        <div class="featured-cta-wrap">
+          <a [routerLink]="section.campaign.payload.cta" class="bgs-btn-outline">
+            {{ section.campaign.payload.ctaLabel ?? 'View all' }}
+          </a>
+        </div>
+      }
+    </section>
+  }
 }
+
+<section class="products-section">
+  <h2 class="section-heading">Wear your faith. Inspire the world.</h2>
+
+  @if (productsError()) {
+    <p class="products-error">{{ productsError() }}</p>
+  }
+
+  <div class="product-grid">
+    @for (p of products(); track p.id) {
+      <article class="product-card">
+        <a [routerLink]="['/product', p.slug]" class="product-image-link">
+          <img [src]="thumb(p)" [alt]="p.name" loading="lazy" class="product-image" />
+        </a>
+        <h3 class="product-name">{{ p.name }}</h3>
+        @if (subtitle(p)) {
+          <p class="product-subtitle">{{ subtitle(p) }}</p>
+        }
+        <p class="product-price">{{ p.basePrice | currency: p.currency.toUpperCase() }}</p>
+        <a [routerLink]="['/product', p.slug]" class="bgs-btn-outline">Choose Options</a>
+      </article>
+    }
+  </div>
+</section>
+
+<section class="values-bar" aria-label="Brand values">
+  <div class="value-item">
+    <svg class="value-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M5 16L12 5L19 16H5Z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" />
+      <path d="M8 16V19H16V16" stroke="currentColor" stroke-width="1.2" />
+      <circle cx="12" cy="8" r="1.5" fill="currentColor" />
+    </svg>
+    <span>Designed for the main character</span>
+  </div>
+  <div class="value-divider" aria-hidden="true"></div>
+  <div class="value-item">
+    <svg class="value-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 10C10 6 6 5 4 8C3 10 4 13 7 14L12 10Z" stroke="currentColor" stroke-width="1.2" />
+      <path d="M12 10C14 6 18 5 20 8C21 10 20 13 17 14L12 10Z" stroke="currentColor" stroke-width="1.2" />
+      <circle cx="12" cy="10" r="1.5" fill="currentColor" />
+    </svg>
+    <span>Luxury details. Timeless quality.</span>
+  </div>
+  <div class="value-divider" aria-hidden="true"></div>
+  <div class="value-item">
+    <svg class="value-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M12 20C12 20 4 14 4 9.5C4 6.5 6.5 4.5 9.5 4.5C11 4.5 12 5.5 12 5.5C12 5.5 13 4.5 14.5 4.5C17.5 4.5 20 6.5 20 9.5C20 14 12 20 12 20Z"
+        stroke="currentColor"
+        stroke-width="1.2"
+      />
+    </svg>
+    <span>Confidence in every step.</span>
+  </div>
+  <div class="value-divider" aria-hidden="true"></div>
+  <div class="value-item">
+    <span class="value-monogram" aria-hidden="true">BG</span>
+    <span>Babygirl Society</span>
+  </div>
+</section>

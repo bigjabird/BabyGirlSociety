@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard } from './core/guards/auth.guard';
+import { staffGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -8,7 +8,31 @@ export const routes: Routes = [
   },
   {
     path: 'shop',
-    loadComponent: () => import('./features/shop/shop-list/shop-list.component').then((m) => m.ShopListComponent)
+    loadComponent: () => import('./features/shop/shop-list/shop-list.component').then((m) => m.ShopListComponent),
+    data: { title: 'Shop', subtitle: 'Browse our full collection.' }
+  },
+  {
+    path: 'new-arrivals',
+    loadComponent: () => import('./features/shop/shop-list/shop-list.component').then((m) => m.ShopListComponent),
+    data: { title: 'New Arrivals', subtitle: 'The latest drops from Babygirl Society.' }
+  },
+  {
+    path: 'best-sellers',
+    loadComponent: () => import('./features/shop/shop-list/shop-list.component').then((m) => m.ShopListComponent),
+    data: { title: 'Best Sellers', subtitle: 'Our most-loved pieces.' }
+  },
+  {
+    path: 'collections',
+    loadComponent: () =>
+      import('./features/shop/collections/collections.component').then((m) => m.CollectionsComponent)
+  },
+  {
+    path: 'about',
+    loadComponent: () => import('./features/shop/about/about.component').then((m) => m.AboutComponent)
+  },
+  {
+    path: 'faq',
+    loadComponent: () => import('./features/shop/faq/faq.component').then((m) => m.FaqComponent)
   },
   {
     path: 'product/:slug',
@@ -40,7 +64,7 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
-    canActivate: [authGuard],
+    canActivate: [staffGuard],
     loadChildren: () => import('./features/admin/admin.routes').then((m) => m.ADMIN_ROUTES)
   },
   { path: '**', redirectTo: '' }

@@ -1,21 +1,79 @@
-<mat-toolbar color="primary" class="toolbar">
-  <a routerLink="/" class="brand">{{ title }}</a>
-  <span class="spacer"></span>
-  <a mat-button routerLink="/shop" routerLinkActive="active">Shop</a>
-  <a mat-button routerLink="/cart" routerLinkActive="active">
-    <span [matBadge]="cartCount()" matBadgeOverlap="false" matBadgeColor="accent">Cart</span>
-  </a>
-  @if (auth.isStaff()) {
-    <a mat-button routerLink="/admin" routerLinkActive="active">Admin</a>
-  }
-  @if (auth.token()) {
-    <button mat-button type="button" (click)="auth.logout()">Sign out</button>
+@if (!hideStoreChrome()) {
+  @if (announcementLink(); as link) {
+    <a [routerLink]="link" class="announcement-bar announcement-bar--link">
+      {{ announcementText() }}
+    </a>
   } @else {
-    <a mat-stroked-button routerLink="/login">Sign in</a>
+    <div class="announcement-bar">
+      {{ announcementText() }}
+    </div>
   }
-</mat-toolbar>
 
-<main class="main">
+  <header class="site-header">
+    <nav class="site-nav site-nav--left" aria-label="Primary left">
+      <a routerLink="/shop" routerLinkActive="active" class="nav-link">
+        Shop
+        <mat-icon class="nav-chevron">expand_more</mat-icon>
+      </a>
+      <a routerLink="/new-arrivals" routerLinkActive="active" class="nav-link">New Arrivals</a>
+      <a routerLink="/best-sellers" routerLinkActive="active" class="nav-link">Best Sellers</a>
+    </nav>
+
+    <a routerLink="/" class="bgs-logo site-logo" aria-label="Babygirl Society home">
+      <span class="bgs-logo__primary">Babygirl</span>
+      <span class="bgs-logo__row">
+        <span class="bgs-logo__line" aria-hidden="true"></span>
+        <span class="bgs-logo__secondary">Society</span>
+        <span class="bgs-logo__heart" aria-hidden="true">♥</span>
+        <span class="bgs-logo__line" aria-hidden="true"></span>
+      </span>
+    </a>
+
+    <div class="site-header-right">
+      <nav class="site-nav site-nav--right" aria-label="Primary right">
+        <a routerLink="/collections" routerLinkActive="active" class="nav-link">
+          Collections
+          <mat-icon class="nav-chevron">expand_more</mat-icon>
+        </a>
+        <a routerLink="/about" routerLinkActive="active" class="nav-link">About Us</a>
+        <a routerLink="/faq" routerLinkActive="active" class="nav-link">FAQ</a>
+      </nav>
+
+      <div class="site-utilities">
+        @if (auth.isStaff()) {
+          <a routerLink="/admin" routerLinkActive="active" class="utility-link">Admin</a>
+        }
+        <button type="button" class="utility-btn" aria-label="Search">
+          <mat-icon>search</mat-icon>
+        </button>
+        @if (auth.token()) {
+          <button
+            type="button"
+            class="utility-btn"
+            aria-label="Account menu"
+            [matMenuTriggerFor]="accountMenu"
+          >
+            <mat-icon>person</mat-icon>
+          </button>
+          <mat-menu #accountMenu="matMenu" xPosition="before">
+            <div class="account-menu-header">{{ auth.email() }}</div>
+            <button mat-menu-item type="button" (click)="auth.logout()">Sign out</button>
+          </mat-menu>
+        } @else {
+          <a routerLink="/login" class="utility-btn" aria-label="Sign in">
+            <mat-icon>person</mat-icon>
+          </a>
+        }
+        <a routerLink="/cart" class="utility-btn utility-btn--cart" aria-label="Cart">
+          <mat-icon>shopping_bag</mat-icon>
+          <span class="cart-badge">{{ cartCount() }}</span>
+        </a>
+      </div>
+    </div>
+  </header>
+}
+
+<main class="main" [class.main--store]="!hideStoreChrome()">
   <router-outlet />
 </main>
 

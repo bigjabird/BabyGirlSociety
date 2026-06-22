@@ -6,6 +6,8 @@ public class Order
     public string? StripeSessionId { get; set; }
     public string? StripePaymentIntentId { get; set; }
     public decimal TotalAmount { get; set; }
+    public decimal DiscountAmount { get; set; }
+    public string? PromoCode { get; set; }
     public string Currency { get; set; } = "usd";
     /// <summary>pending, paid, failed</summary>
     public string Status { get; set; } = "pending";

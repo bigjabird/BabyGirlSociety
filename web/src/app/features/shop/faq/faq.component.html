@@ -1,0 +1,20 @@
+<section class="page">
+  <h1 class="page-title">FAQ</h1>
+  <p class="page-lead">Answers to our most common questions.</p>
+
+  <dl class="faq-list">
+    @for (item of items; track item.question) {
+      <div class="faq-item">
+        <dt>{{ item.question }}</dt>
+        <dd>{{ item.answer }}</dd>
+      </div>
+    }
+  </dl>
+
+  <p class="contact-note">
+    Still have questions?
+    <a [href]="supportEmailHref">{{ supportEmail }}</a>
+  </p>
+
+  <a routerLink="/shop" class="bgs-btn-primary">Browse Shop</a>
+</section>

@@ -1,0 +1,14 @@
+<section class="page">
+  <h1 class="page-title">Collections</h1>
+  <p class="page-lead">Curated edits for every moment.</p>
+
+  <div class="collection-grid">
+    @for (c of collections; track c.name) {
+      <a [routerLink]="c.link" class="collection-card">
+        <h2>{{ c.name }}</h2>
+        <p>{{ c.description }}</p>
+        <span class="collection-cta">Shop collection</span>
+      </a>
+    }
+  </div>
+</section>

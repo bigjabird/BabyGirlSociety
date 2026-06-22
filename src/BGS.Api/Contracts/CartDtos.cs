@@ -2,6 +2,6 @@ namespace BGS.Api.Contracts;
 
 public record CheckoutLineRequest(Guid ProductId, int Quantity);
 
-public record CreateCheckoutSessionRequest(IReadOnlyList<CheckoutLineRequest> Items);
+public record CreateCheckoutSessionRequest(IReadOnlyList<CheckoutLineRequest> Items, string? PromoCode = null);
 
 public record CreateCheckoutSessionResponse(string SessionUrl, Guid OrderId);

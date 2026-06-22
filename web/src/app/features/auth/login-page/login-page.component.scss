@@ -1,19 +1,82 @@
-.card {
+.page {
   max-width: 420px;
-  margin: 2rem auto;
+  margin: 0 auto;
+  padding: 3rem 2rem 4rem;
+  text-align: center;
 }
 
-.full {
-  width: 100%;
+.page-title {
+  margin: 0 0 0.75rem;
+  font-family: var(--bgs-font-serif);
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--bgs-brown-dark);
+}
+
+.page-lead {
+  margin: 0 0 2rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bgs-text-muted);
+}
+
+.form {
+  text-align: left;
+}
+
+.field {
   display: block;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.field-label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--bgs-text-muted);
+}
+
+.field-input {
+  width: 100%;
+  padding: 0.75rem 0.85rem;
+  border: 1px solid var(--bgs-border);
+  border-radius: var(--bgs-radius, 4px);
+  font-family: inherit;
+  font-size: 0.95rem;
+  background: var(--bgs-white);
+
+  &:focus {
+    outline: none;
+    border-color: var(--bgs-brown);
+  }
 }
 
 .err {
   color: #b00020;
+  font-size: 0.85rem;
+  margin: 0 0 1rem;
+}
+
+.submit-btn {
+  width: 100%;
+  border: none;
+  cursor: pointer;
 }
 
 .back {
-  margin-top: 1rem;
-  font-size: 0.9rem;
+  margin-top: 1.25rem;
+  text-align: center;
+  font-size: 0.85rem;
+
+  a {
+    color: var(--bgs-brown);
+    text-decoration: underline;
+  }
 }

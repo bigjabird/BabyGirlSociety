@@ -1,15 +1,11 @@
 import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-login-page',
-  imports: [FormsModule, MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule, RouterLink],
+  imports: [FormsModule, RouterLink],
   templateUrl: './login-page.component.html',
   styleUrl: './login-page.component.scss'
 })
@@ -26,10 +22,19 @@ export class LoginPageComponent {
     this.error.set(null);
     this.auth.login(this.email.trim(), this.password).subscribe({
       next: () => {
-        const url = this.route.snapshot.queryParamMap.get('returnUrl') ?? '/admin';
-        void this.router.navigateByUrl(url);
+        const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+        if (returnUrl) {
+          if (returnUrl.startsWith('/admin') && !this.auth.isStaff()) {
+            this.error.set('You do not have permission to access that area.');
+            void this.router.navigateByUrl('/');
+            return;
+          }
+          void this.router.navigateByUrl(returnUrl);
+          return;
+        }
+        void this.router.navigateByUrl('/');
       },
-      error: () => this.error.set('Invalid email or password')
+      error: () => this.error.set('Invalid email or password.')
     });
   }
 }

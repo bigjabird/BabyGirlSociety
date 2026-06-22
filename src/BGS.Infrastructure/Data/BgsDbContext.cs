@@ -50,6 +50,8 @@ public class BgsDbContext : DbContext
         {
             e.HasIndex(o => o.StripeSessionId);
             e.Property(o => o.TotalAmount).HasPrecision(18, 2);
+            e.Property(o => o.DiscountAmount).HasPrecision(18, 2);
+            e.Property(o => o.PromoCode).HasMaxLength(80);
             e.Property(o => o.Status).HasMaxLength(40);
             e.Property(o => o.Currency).HasMaxLength(10);
         });

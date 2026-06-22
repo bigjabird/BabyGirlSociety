@@ -13,11 +13,18 @@ export class AuthService {
   readonly email = signal<string | null>(typeof localStorage !== 'undefined' ? localStorage.getItem(EMAIL_KEY) : null);
   readonly role = signal<string | null>(typeof localStorage !== 'undefined' ? localStorage.getItem(ROLE_KEY) : null);
 
-  /** Staff (admin or staff role) — can access /admin */
+  /** admin or staff — can access /admin */
   readonly isStaff = computed(() => {
     const r = this.role();
     return r === 'admin' || r === 'staff';
   });
+
+  readonly isAdmin = computed(() => this.role() === 'admin');
+
+  hasRole(...roles: string[]): boolean {
+    const r = this.role();
+    return r != null && roles.includes(r);
+  }
 
   constructor(
     private readonly api: ApiService,

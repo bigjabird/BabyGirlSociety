@@ -1,0 +1,64 @@
+.page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 3rem 2rem 4rem;
+  text-align: center;
+}
+
+.page-title {
+  margin: 0 0 0.75rem;
+  font-family: var(--bgs-font-serif);
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--bgs-brown-dark);
+}
+
+.page-lead {
+  margin: 0 0 2.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bgs-text-muted);
+}
+
+.faq-list {
+  margin: 0 0 2rem;
+  text-align: left;
+}
+
+.faq-item {
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--bgs-border);
+
+  dt {
+    margin: 0 0 0.5rem;
+    font-family: var(--bgs-font-serif);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--bgs-brown-dark);
+  }
+
+  dd {
+    margin: 0;
+    line-height: 1.65;
+    color: var(--bgs-text);
+  }
+}
+
+.contact-note {
+  margin: 0 0 2rem;
+  font-size: 0.85rem;
+  color: var(--bgs-text-muted);
+
+  a {
+    color: var(--bgs-brown);
+    text-decoration: underline;
+  }
+}
+
+.bgs-btn-primary {
+  text-decoration: none;
+}

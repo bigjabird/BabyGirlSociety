@@ -1,0 +1,71 @@
+.page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 3rem 2rem 4rem;
+  text-align: center;
+}
+
+.page-title {
+  margin: 0 0 0.75rem;
+  font-family: var(--bgs-font-serif);
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--bgs-brown-dark);
+}
+
+.page-lead {
+  margin: 0 0 2.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bgs-text-muted);
+}
+
+.collection-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.25rem;
+}
+
+.collection-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1.5rem;
+  background: var(--bgs-beige-light);
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: var(--bgs-beige);
+  }
+
+  h2 {
+    margin: 0 0 0.75rem;
+    font-family: var(--bgs-font-serif);
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--bgs-brown-dark);
+  }
+
+  p {
+    margin: 0 0 1.25rem;
+    font-size: 0.85rem;
+    line-height: 1.55;
+    color: var(--bgs-text);
+  }
+}
+
+.collection-cta {
+  margin-top: auto;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--bgs-brown);
+  border-bottom: 1px solid currentColor;
+}

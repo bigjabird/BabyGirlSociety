@@ -131,6 +131,14 @@ namespace BGS.Infrastructure.Data.Migrations
                     b.Property<string>("CustomerEmail")
                         .HasColumnType("text");
 
+                    b.Property<decimal>("DiscountAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
+
+                    b.Property<string>("PromoCode")
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(40)
